@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.scii.demo.mapper.LoginMapper">
+	<resultMap type="com.scii.demo.model.LoginModel" id="loginmodel"></resultMap>
+	<!-- <resultMap type="LoginModel" id="loginmodel">
+		<result column="login_id" property="login_id"/>
+		<result column="password" property="password"/>
+		
+	</resultMap> -->
+
+	<select id="getUser" resultMap="loginmodel">
+		SELECT 
+			 login_id
+			,password 
+		FROM 
+			login 
+		where 
+			login_id = #{login_id} 
+			AND password = #{password} 
+	</select>
+
+</mapper>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.scii.demo.mapper.RegisterMapper">
+	<resultMap type="com.scii.demo.model.SalaryModel" id="salarymodel"></resultMap>
+	<resultMap type="com.scii.demo.model.DepartmentModel" id="departmentmodel"></resultMap>
+	<resultMap type="com.scii.demo.model.DesignationModel" id="designationmodel"></resultMap>
+	<resultMap type="com.scii.demo.model.RegisterModel" id="registermodel"></resultMap>
+
+	<select id="getDepartmentInfo" resultMap="departmentmodel">
+		SELECT 
+			 department_id
+			,department_name 
+		FROM 
+			departments 
+	</select>
+	
+	<select id="getDesignationInfo" resultMap="designationmodel">
+		SELECT 
+			 designation_id
+			,designation_name 
+		FROM 
+			designation 
+	</select>
+	
+	<insert id="insertOrUpdateEmployee" parameterType="com.scii.demo.model.RegisterModel">
+		insert into employees(
+			employee_id, 
+			first_name,
+			last_name, 
+			date_of_birth,
+			address,gender,
+			contact_number,
+			email_id,
+			date_of_joining,
+			batch,
+			department_id,
+			designation_id,
+			account_number,
+			pan,
+			pf_account_number,
+			discontinued
+		)
+		values (
+			#{employee_id},
+			#{first_name}, 
+			#{last_name}, 
+			#{date_of_birth},
+			#{address},
+			#{gender}, 
+			#{contact_number}, 
+			#{email_id},
+			#{date_of_joining},
+			#{batch}, 
+			#{department_id}, 
+			#{designation_id},
+			#{account_number},
+			#{pan}, 
+			#{pf_account_number}, 
+			'0'
+		) 
+	</insert> 
+	
+	<select id="getEmployeeInfo" resultMap="registermodel">
+		select
+			  a.EMPLOYEE_ID
+			, a.FIRST_NAME
+			, a.LAST_NAME
+			, a.DATE_OF_BIRTH
+			, a.ADDRESS
+			, a.CONTACT_NUMBER
+			, a.EMAIL_ID
+			, a.GENDER
+			, a.DATE_OF_JOINING
+			, a.BATCH
+			, a.DEPARTMENT_ID
+			, a.DESIGNATION_ID
+			, a.ACCOUNT_NUMBER
+			, a.PAN
+			, a.PF_ACCOUNT_NUMBER
+			, a.DATE_OF_LEAVING
+			, a.DISCONTINUED
+			, b.DEPARTMENT_NAME
+			, c.DESIGNATION_NAME
+		from
+			EMPLOYEES a left join DEPARTMENTS b on a.DEPARTMENT_ID = b.DEPARTMENT_ID
+						left join DESIGNATION c on a.DESIGNATION_ID = c.DESIGNATION_ID
+			where
+				a.DISCONTINUED = '0'
+	</select> 
+	
+	<!-- <select id="getEmployeeInfo" resultMap="registermodel">
+		 select e.employee_id,e.first_name ,e.date_of_birth,e.address,e.gender,e.contact_number,e.email_id,e.date_of_joining,e.batch,e.account_number,e.pan,e.pf_account_number,e.discontinued,e.date_of_leaving,e.department_id,e.designation_id 
+		 from  Employees AS e
+	 
+	</select> -->
+	
+	<update id="UpdateEmployee" parameterType="com.scii.demo.model.RegisterModel">
+		UPDATE employees SET 
+			  first_name = #{first_name}
+			, last_name = #{last_name}
+			, date_of_birth = #{date_of_birth}
+			, address = #{address}
+			, gender = #{gender}
+			, contact_number = #{contact_number}
+			, email_id = #{email_id}
+			, date_of_joining = #{date_of_joining}
+			, date_of_leaving = #{date_of_leaving}
+			, batch = #{batch}
+			, department_id = #{department_id}
+			, designation_id = #{designation_id}
+			, account_number = #{account_number}
+			, pan = #{pan}
+			, pf_account_number = #{pf_account_number}
+			, discontinued = #{discontinued}
+	
+		WHERE employee_id = #{employee_id} 
+	</update>
+	
+<!-- 	<update id="UpdateSalary" parameterType="com.scii.demo.model.SalaryModel">
+	UPDATE salary SET 
+	  salary_date = #{salary_date}
+	, basic_salary = #{basic_salary}
+	, worked_days = #{worked_days}
+	, sick_leave = #{sick_leave}
+	, earned_leave = #{earned_leave}
+	 
+	 WHERE employee_id = #{employee_id} 
+	</update> -->
+	
+	<insert id="insertorUpdateSalary" parameterType="com.scii.demo.model.SalaryModel">
+		insert into salary
+			(employee_id
+			, salary_date
+			, basic_salary
+			, worked_days
+			, sick_leave
+			, earned_leave
+			)
+		values(
+			  #{employee_id}
+			, #{salary_date}
+			, #{basic_salary}
+			, #{worked_days}
+			, #{sick_leave}
+			, #{earned_leave})
+		on conflict(employee_id, salary_date)
+		do
+		update set 
+			  basic_salary = #{basic_salary}
+			, worked_days = #{worked_days}
+			, sick_leave = #{sick_leave}
+			, earned_leave = #{earned_leave}; 
+	</insert>
+</mapper>
